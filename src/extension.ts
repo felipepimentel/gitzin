@@ -1,31 +1,35 @@
-import * as vscode from 'vscode';
-import { CommitMessageProvider } from './commit/provider';
+import * as vscode from "vscode";
+import { GitzinExplorerProvider } from "./view";
+import { setCommmitMessage } from "./core/git";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Extension "gitzin" has been activated!');
 
-  const provider = new CommitMessageProvider(context.extensionUri);
+  // const panel = vscode.window.createWebviewPanel(
+  //   "gitzin",
+  //   "Gitzin",
+  //   vscode.ViewColumn.One,
+  //   { enableScripts: true }
+  // );
 
-  console.log('Registering Webview Provider');
-  
+  const provider = new GitzinExplorerProvider(context);
+
+  console.log("Registering Webview Provider");
+
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(CommitMessageProvider.viewType, provider)
+    vscode.window.registerWebviewViewProvider("gitzin.webview", provider),
+    vscode.commands.registerCommand("gitzin.start", () =>
+      console.log("start")
+    ),
+    vscode.commands.registerCommand("gitzin.generateCommitMessage", () =>
+      console.log("generateCommitMessage")
+    ),
+    vscode.commands.registerCommand('gitzin.setCommmitMessage', () => {
+      console.log('setCommmitMessage');
+      setCommmitMessage(context);
+      
+    })
   );
-
-  console.log('Registering command to generate commit message');
-
-  const disposable = vscode.commands.registerCommand('gitzin.generateCommitMessage', async () => {
-    console.log('Command gitzin.generateCommitMessage called');
-    try {
-      await vscode.commands.executeCommand('workbench.view.extension.gitzin-viewContainer');
-      await provider.generateAndShowCommitMessage();
-    } catch (error) {
-      console.error('Error generating commit message:', error);
-      vscode.window.showErrorMessage(`Error generating commit message: ${error}`);
-    }
-  });
-
-  context.subscriptions.push(disposable);
 }
 
 // Deactivation function (optional)

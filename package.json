@@ -8,6 +8,10 @@
     "type": "git",
     "url": "https://github.com/felipepimentel/gitzin.git"
   },
+  "galleryBanner": {
+    "color": "#4F4FFF",
+    "theme": "dark"
+  },
   "license": "MIT",
   "keywords": [
     "git",
@@ -21,66 +25,118 @@
   "categories": [
     "Other"
   ],
-  "icon": "resources/icon.png",
+  "icon": "media/icons/icon.png",
   "main": "./out/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "gitzin-viewContainer",
-          "title": "Gitzin",
-          "icon": "resources/icon.svg"
-        }
-      ]
-    },
-    "views": {
-      "gitzin-viewContainer": [
-        {
-          "id": "commitMessageView",
-          "name": "Commit Message"
-        }
-      ]
-    },
     "commands": [
       {
-        "command": "gitzin.generateCommitMessage",
-        "title": "Generate Commit Message"
-      },
-      {
-        "command": "extension.helloWebpack",
-        "title": "Hello Webpack"
+        "command": "gitzin.generateCommit",
+        "title": "Generate Commit",
+        "category": "Commit AI",
+        "icon": {
+          "light": "./media/button_light.png",
+          "dark": "./media/button_dark.png"
+        }
       }
     ],
-    "activationEvents": [
-      "onView:commitMessageView",
-      "onCommand:gitzin.generateCommitMessage"
-    ]
+    "menus": {
+      "scm/title": [
+        {
+          "command": "gitzin.generateCommit",
+          "when": "scmProvider == git",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Commit AI",
+      "properties": {
+        "commit-ai.openAiApiKey": {
+          "type": "string",
+          "default": null,
+          "markdownDescription": "Your OpenAI API key. You can get one [here](https://platform.openai.com/)."
+        },
+        "commit-ai.prompt.openAiMaxToken": {
+          "type": "number",
+          "default": 500,
+          "minimum": 10,
+          "markdownDescription": "1,000 tokens is about 750 words. The [price](https://openai.com/pricing) per token is different for each model. **``500`` is recommended**"
+        },
+        "commit-ai.commitNorm": {
+          "type": "string",
+          "enum": [
+            "Karma",
+            "Basic",
+            "Dotted",
+            "Emoji"
+          ],
+          "enumDescriptions": [
+            "<type>(<scope>): <subject> <body>",
+            "<type>: <title>",
+            "<type>(<scope>): <subject> <body (with dotted changes)>",
+            "<emoji> <type>: <subject>"
+          ],
+          "default": "Basic",
+          "markdownDescription": "The commit norm to use for generating commit messages."
+        },
+        "commit-ai.prompt.customPrompt": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Set a custom prompt describing the commit message format to generate."
+        },
+        "commit-ai.prompt.openAiTemperature": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 2,
+          "markdownDescription": "Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive. **``0.7`` is recommended**"
+        },
+        "commit-ai.prompt.openAiModel": {
+          "type": "string",
+          "enum": [
+            "gpt-3.5-turbo",
+            "gpt-3.5-turbo-16k",
+            "gpt-4"
+          ],
+          "enumDescriptions": [
+            "Input: $0.0015 / 1K tokens - Ouput: $0.002 / 1K tokens",
+            "Input: $0.003 / 1K tokens - Ouput: $0.004 / 1K tokens",
+            "Input: $0.03 / 1K tokens - Ouput: $0.06 / 1K tokens"
+          ],
+          "default": "gpt-3.5-turbo-16k",
+          "markdownDescription": "The model to use for generating commit messages. The [price](https://openai.com/pricing) per token is different for each model."
+        }
+      }
+    }
   },
   "scripts": {
-    "clean": "rm -rf ./out",
-    "vscode:prepublish": "npm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@hediet/node-reload": "^0.8.0",
-    "@hediet/std": "^0.6.0",
+    "@types/mocha": "^10.0.9",
+    "@types/node": "^22.7.7",
     "@types/vscode": "^1.94.0",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.10.0",
+    "@vscode/codicons": "^0.0.36",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
-    "clean-webpack-plugin": "^4.0.0",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.6.2",
-    "webpack": "^5.95.0",
-    "webpack-cli": "^5.1.4"
+    "esbuild": "^0.24.0",
+    "eslint": "^9.13.0",
+    "glob": "^11.0.0",
+    "mocha": "^10.7.3",
+    "typescript": "^5.6.2"
   },
   "dependencies": {
     "isomorphic-fetch": "^3.0.0"
-  }
+  },
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
