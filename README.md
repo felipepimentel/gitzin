@@ -1,71 +1,81 @@
-# gitzin README
+# Gitzin: AI-Powered Git Commit Message Generator
 
-This is the README for your extension "gitzin". After writing up a brief description, we recommend including the following sections.
+![Gitzin Logo](media/icons/icon.png)
+
+Gitzin is a powerful VS Code extension that revolutionizes your Git workflow by generating intelligent, context-aware commit messages using advanced AI. Say goodbye to writer's block and hello to meaningful, consistent commit histories!
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- 🤖 AI-powered commit message generation
+- 🎨 Multiple commit message styles (Basic, Karma, Dotted, Emoji)
+- 🔄 Seamless integration with VS Code's built-in Git features
+- 🌐 Support for multiple AI providers (OpenRouter, StackSpot)
+- 🛠️ Highly customizable settings
 
-For example if there is an image subfolder under your extension project workspace:
+### AI-Powered Commit Messages
 
-\!\[feature X\]\(images/feature-x.png\)
+Gitzin analyzes your code changes and generates appropriate commit messages with a single click:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![Gitzin Demo](media/gitzin-demo.gif)
+
+### Multiple Commit Styles
+
+Choose from various commit message styles to match your project's conventions:
+
+- Basic: `<type>: <title>`
+- Karma: `<type>(<scope>): <subject>`
+- Dotted: Detailed messages with bullet points
+- Emoji: Commits prefixed with descriptive emojis
+
+## Installation
+
+1. Open VS Code
+2. Go to the Extensions view (Ctrl+Shift+X)
+3. Search for "Gitzin"
+4. Click Install
+
+## Usage
+
+1. Make changes to your code
+2. Open the Gitzin sidebar in the Explorer view
+3. (Optional) Enter a brief description of your changes
+4. Click "Generate Message"
+5. Review and adjust the generated commit message
+6. Commit your changes using VS Code's Git integration
+
+## Configuration
+
+Gitzin offers extensive customization options. Access them via File > Preferences > Settings > Extensions > Gitzin.
+
+Key settings include:
+
+- `gitzin.apiKey`: Your API key for OpenRouter or StackSpot
+- `gitzin.apiProvider`: Choose between "openrouter" and "stackspot"
+- `gitzin.commitNorm`: Select your preferred commit message style
+- `gitzin.openRouter.model`: Specify the AI model for OpenRouter
+- `gitzin.stackspot.quickCommand`: Set the quick command for StackSpot
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- VS Code version 1.90.0 or higher
+- Active internet connection for AI API calls
 
-## Extension Settings
+## Privacy and Security
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Gitzin sends only the git diff of your changes to the AI provider. No other project information or personal data is transmitted. Always review generated commit messages before finalizing them.
 
-For example:
+## Contributing
 
-This extension contributes the following settings:
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for more details.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## License
 
-## Known Issues
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Support
 
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+If you encounter any issues or have feature requests, please [open an issue](https://github.com/felipepimentel/gitzin/issues) on our GitHub repository.
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Developed with ❤️ by [Felipe Pimentel](https://github.com/felipepimentel)
