@@ -22,7 +22,6 @@ export async function requestCommitMessageFromOpenRouter(
   const timeoutId = setTimeout(() => controller.abort(), 10000);
   
   try {
-    console.log('Iniciando requisição para OpenRouter API...');
     const apiUrl = vscode.workspace.getConfiguration().get<string>('gitzin.openRouter.apiUrl') || 'https://openrouter.ai/api/v1/chat/completions';
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -31,48 +30,45 @@ export async function requestCommitMessageFromOpenRouter(
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: model,
-        messages: [{ role: 'user', content: content }],
+        model,
+        messages: [{ role: 'user', content }],
         max_tokens: maxTokens,
-        temperature: temperature,
-        provider: {
-          allow_fallbacks: true
-        }
+        temperature,
+        provider: { allow_fallbacks: true }
       }),
       signal: controller.signal
     });
 
     clearTimeout(timeoutId);
-    console.log('Resposta recebida da OpenRouter API');
 
     if (!response.ok) {
-      console.error(`Erro na resposta: ${response.status} ${response.statusText}`);
       throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
     }
 
     const data: OpenRouterCompletionResponse = await response.json() as OpenRouterCompletionResponse;
-    console.log('Dados recebidos:', data);
-    const commitMessage = data.choices?.[0]?.message?.content || '';
+    const commitMessage = data.choices?.[0]?.message?.content;
 
     if (typeof commitMessage !== 'string') {
       throw new Error('Invalid commit message format received from OpenRouter');
     }
 
     return commitMessage;
-
   } catch (error) {
-    console.error('Erro detalhado:', error);
-    if (error instanceof Error) {
-      if (error.message.includes('ENOTFOUND')) {
-        throw new Error('Network error: Unable to reach OpenRouter API. Please check your DNS settings or internet connection.');
-      } else if (error.message.includes('ECONNREFUSED')) {
-        throw new Error('Network error: Connection refused. Please verify the API URL or your network settings.');
-      } else {
-        throw new Error(`Error generating commit message: ${error.message}`);
-      }
+    handleApiError(error);
+  }
+}
+
+function handleApiError(error: unknown): never {
+  if (error instanceof Error) {
+    if (error.message.includes('ENOTFOUND')) {
+      throw new Error('Network error: Unable to reach OpenRouter API. Please check your DNS settings or internet connection.');
+    } else if (error.message.includes('ECONNREFUSED')) {
+      throw new Error('Network error: Connection refused. Please verify the API URL or your network settings.');
     } else {
-      throw new Error('An unknown error occurred while generating the commit message.');
+      throw new Error(`Error generating commit message: ${error.message}`);
     }
+  } else {
+    throw new Error('An unknown error occurred while generating the commit message.');
   }
 }
 
