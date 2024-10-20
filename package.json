@@ -31,8 +31,7 @@
     "commands": [
       {
         "command": "gitzin.generateCommit",
-        "title": "Generate Commit",
-        "category": "Commit AI",
+        "title": "Generate Commit Message",
         "icon": {
           "light": "./media/button_light.png",
           "dark": "./media/button_dark.png"
@@ -48,63 +47,53 @@
         }
       ]
     },
+    "views": {
+      "explorer": [
+        {
+          "id": "gitzin-commit-view",
+          "name": "Gitzin Commit View"
+        }
+      ]
+    },
     "configuration": {
       "title": "Commit AI",
       "properties": {
-        "commit-ai.openAiApiKey": {
+        "gitzin.apiKey": {
           "type": "string",
           "default": null,
-          "markdownDescription": "Your OpenAI API key. You can get one [here](https://platform.openai.com/)."
+          "markdownDescription": "Your API key for OpenRouter or StackSpot"
         },
-        "commit-ai.prompt.openAiMaxToken": {
+        "gitzin.apiProvider": {
+          "type": "string",
+          "enum": ["openrouter", "stackspot"],
+          "default": "openrouter",
+          "markdownDescription": "Choose the AI provider"
+        },
+        "gitzin.commitNorm": {
+          "type": "string",
+          "enum": ["Basic", "Karma", "Dotted", "Emoji"],
+          "default": "Basic",
+          "markdownDescription": "Commit message style"
+        },
+        "gitzin.openRouter.model": {
+          "type": "string",
+          "default": "openai/gpt-4o-mini",
+          "markdownDescription": "Model to use for OpenRouter"
+        },
+        "gitzin.openRouter.maxTokens": {
           "type": "number",
           "default": 500,
-          "minimum": 10,
-          "markdownDescription": "1,000 tokens is about 750 words. The [price](https://openai.com/pricing) per token is different for each model. **``500`` is recommended**"
+          "markdownDescription": "Maximum tokens for OpenRouter"
         },
-        "commit-ai.commitNorm": {
-          "type": "string",
-          "enum": [
-            "Karma",
-            "Basic",
-            "Dotted",
-            "Emoji"
-          ],
-          "enumDescriptions": [
-            "<type>(<scope>): <subject> <body>",
-            "<type>: <title>",
-            "<type>(<scope>): <subject> <body (with dotted changes)>",
-            "<emoji> <type>: <subject>"
-          ],
-          "default": "Basic",
-          "markdownDescription": "The commit norm to use for generating commit messages."
-        },
-        "commit-ai.prompt.customPrompt": {
-          "type": "string",
-          "default": "",
-          "markdownDescription": "Set a custom prompt describing the commit message format to generate."
-        },
-        "commit-ai.prompt.openAiTemperature": {
+        "gitzin.openRouter.temperature": {
           "type": "number",
           "default": 0.7,
-          "minimum": 0,
-          "maximum": 2,
-          "markdownDescription": "Controls randomness: Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive. **``0.7`` is recommended**"
+          "markdownDescription": "Temperature for OpenRouter"
         },
-        "commit-ai.prompt.openAiModel": {
+        "gitzin.stackspot.quickCommand": {
           "type": "string",
-          "enum": [
-            "gpt-3.5-turbo",
-            "gpt-3.5-turbo-16k",
-            "gpt-4"
-          ],
-          "enumDescriptions": [
-            "Input: $0.0015 / 1K tokens - Ouput: $0.002 / 1K tokens",
-            "Input: $0.003 / 1K tokens - Ouput: $0.004 / 1K tokens",
-            "Input: $0.03 / 1K tokens - Ouput: $0.06 / 1K tokens"
-          ],
-          "default": "gpt-3.5-turbo-16k",
-          "markdownDescription": "The model to use for generating commit messages. The [price](https://openai.com/pricing) per token is different for each model."
+          "default": "translate-english-to-spanish",
+          "markdownDescription": "Quick command for StackSpot"
         }
       }
     }
@@ -120,6 +109,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.9",
     "@types/node": "^22.7.7",
+    "@types/node-fetch": "2",
     "@types/vscode": "^1.94.0",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.10.0",
@@ -133,7 +123,8 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "isomorphic-fetch": "^3.0.0"
+    "isomorphic-fetch": "^3.0.0",
+    "node-fetch": "2"
   },
   "extensionDependencies": [
     "vscode.git"
